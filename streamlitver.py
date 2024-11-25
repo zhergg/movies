@@ -9,12 +9,14 @@ import plotly.express as px
 st.set_page_config(page_title="dash", layout="wide")
 
 # Initialize Firestore
-if not firebase_admin._apps:  # Check if Firebase is not already initialized
-    firebase_creds = st.secrets["firebase"]  # Load credentials from Streamlit Secrets
-    cred = credentials.Certificate(firebase_creds)  # Use the credentials
+if not firebase_admin._apps:  # Ensure Firebase is initialized only once
+    firebase_creds = dict(st.secrets["firebase"])  # Convert secrets to a dictionary
+    cred = credentials.Certificate(firebase_creds)  # Use the dictionary directly
     firebase_admin.initialize_app(cred)  # Initialize Firebase app
 
+# Firestore client
 db = firestore.client()
+
 # Fetch all movie data
 movies_ref = db.collection('movies2')
 movies = movies_ref.stream()
